@@ -1,0 +1,51 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "buffer_line_height": {
+    "custom": 1.4,
+  },
+  "outline_panel": {
+    "dock": "right",
+  },
+  "git_panel": {
+    "dock": "right",
+  },
+  "disable_ai": true,
+  "helix_mode": false,
+  "git": {
+    "inline_blame": {
+      "enabled": false,
+    },
+  },
+  "project_panel": {
+    "dock": "right",
+  },
+  "preferred_line_length": 80,
+  "relative_line_numbers": "enabled",
+  "auto_signature_help": true,
+  "show_signature_help_after_edits": true,
+  "sticky_scroll": {
+    "enabled": true,
+  },
+  "ui_font_family": ".ZedMono",
+  "buffer_font_weight": 600.0,
+  "buffer_font_family": "JetBrains Mono",
+  "use_system_prompts": false,
+  "use_system_path_prompts": false,
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+  },
+  "vim_mode": true,
+  "base_keymap": "None",
+  "icon_theme": "Zed (Default)",
+  "ui_font_size": 16.0,
+  "buffer_font_size": 22.0,
+  "theme": "Kanagawa Wave",
+}
