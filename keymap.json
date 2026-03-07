@@ -1,6 +1,3 @@
-// Zed keymap
-//
-// For information on binding keys, see the Zed
 // documentation: https://zed.dev/docs/key-bindings
 //
 // To see the default key bindings run `zed: open default keymap`
@@ -1879,7 +1876,7 @@
       "alt-tab": "editor::AcceptEditPrediction",
       "alt-l": "editor::AcceptEditPrediction",
       "tab": "editor::AcceptEditPrediction",
-      "alt-right": "editor::AcceptPartialEditPrediction",
+      "alt-right": "editor::AcceptNextWordEditPrediction",
     },
   },
   {
@@ -1888,7 +1885,7 @@
     "bindings": {
       "alt-tab": "editor::AcceptEditPrediction",
       "alt-l": "editor::AcceptEditPrediction",
-      "alt-right": "editor::AcceptPartialEditPrediction",
+      "alt-right": "editor::AcceptNextWordEditPrediction",
     },
   },
   {
