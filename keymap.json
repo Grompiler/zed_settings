@@ -339,6 +339,14 @@
     "bindings": {
       "shift-a": "terminal::ToggleViMode",
 
+      // Deplacements alignes sur l'editeur. On rejoue les touches que le
+      // mode vi du terminal comprend nativement : ctrl-d / ctrl-u pour la
+      // demi-page, 0 et $ pour le debut et la fin de ligne.
+      "ctrl-j": ["workspace::SendKeystrokes", "ctrl-d"],
+      "ctrl-k": ["workspace::SendKeystrokes", "ctrl-u"],
+      "ctrl-h": ["workspace::SendKeystrokes", "0"],
+      "ctrl-l": ["workspace::SendKeystrokes", "$"],
+
       // En mode vi, space n'est plus un caractere saisi : on rejoue
       // l'arbre leader complet pour ne jamais avoir a sortir du terminal.
       "space space": "command_palette::Toggle",
