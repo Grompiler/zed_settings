@@ -181,8 +181,8 @@ dépendent d'un enchaînement de touches du leader éditeur.
     "players": [{ "cursor": "#2e8b57ff", "background": "#2e8b57ff", "selection": "#2e8b5733" }]
   },
   "terminal": { "button": false, "working_directory": "current_project_directory" },
-  "project_panel": { "dock": "left" },
-  "git_panel": { "dock": "left" },
+  "project_panel": { "dock": "right" },
+  "git_panel": { "dock": "right" },
   "outline_panel": { "dock": "right" },
   "scrollbar": { "show": "never" },
   "minimap": { "show": "never" },
