@@ -104,6 +104,7 @@
     "bindings": {
       "space space": "command_palette::Toggle",
       "space tab": "pane::AlternateFile",
+      "space q q": "zed::Quit",
       "space /": "pane::DeploySearch",
       "space *": ["workspace::SendKeystrokes", "v i w ctrl-shift-f"]
     }
@@ -325,8 +326,16 @@
     "context": "Terminal",
     "bindings": {
       "ctrl-n": null,
+      "ctrl-shift-space": null,
+      "shift-escape": "terminal::ToggleViMode",
       "ctrl-shift-5": "pane::SplitVertical",
       "ctrl-shift-6": "pane::SplitHorizontal"
+    }
+  },
+  {
+    "context": "Terminal && vi_mode",
+    "bindings": {
+      "shift-a": "terminal::ToggleViMode"
     }
   },
 
