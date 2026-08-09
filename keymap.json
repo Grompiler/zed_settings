@@ -179,10 +179,12 @@
       "space m s": ["workspace::SendKeystrokes", "m shift-s"],
       "space m d": ["workspace::SendKeystrokes", "m shift-d"],
       "space m f": ["workspace::SendKeystrokes", "m shift-f"],
+      "space m g": ["workspace::SendKeystrokes", "m shift-g"],
       "space m A": ["workspace::SendKeystrokes", "` shift-a"],
       "space m S": ["workspace::SendKeystrokes", "` shift-s"],
       "space m D": ["workspace::SendKeystrokes", "` shift-d"],
-      "space m F": ["workspace::SendKeystrokes", "` shift-f"]
+      "space m F": ["workspace::SendKeystrokes", "` shift-f"],
+      "space m G": ["workspace::SendKeystrokes", "` shift-g"]
     }
   },
 
@@ -335,7 +337,57 @@
   {
     "context": "Terminal && vi_mode",
     "bindings": {
-      "shift-a": "terminal::ToggleViMode"
+      "shift-a": "terminal::ToggleViMode",
+
+      // En mode vi, space n'est plus un caractere saisi : on rejoue
+      // l'arbre leader complet pour ne jamais avoir a sortir du terminal.
+      "space space": "command_palette::Toggle",
+      "space tab": "pane::AlternateFile",
+      "space /": "pane::DeploySearch",
+      "space q q": "zed::Quit",
+
+      "space f f": "file_finder::Toggle",
+      "space f p": "project_panel::ToggleFocus",
+      "space f g": "git::OpenModifiedFiles",
+      "space f s": "workspace::Save",
+      "space f S": "workspace::SaveAll",
+      "space f n": "workspace::NewFile",
+
+      "space b b": "tab_switcher::ToggleAll",
+      "space b n": "pane::ActivateNextItem",
+      "space b p": "pane::ActivatePreviousItem",
+
+      "space w h": "workspace::ActivatePaneLeft",
+      "space w j": "workspace::ActivatePaneDown",
+      "space w k": "workspace::ActivatePaneUp",
+      "space w l": "workspace::ActivatePaneRight",
+      "space w /": "pane::SplitVertical",
+      "space w -": "pane::SplitHorizontal",
+      "space w d": "pane::CloseActiveItem",
+      "space w o": "workspace::CloseInactiveTabsAndPanes",
+      "space w z": "workspace::ToggleZoom",
+      "space w m": "workspace::CloseAllDocks",
+      "space w =": "vim::ResetPaneSizes",
+
+      "space m m": "pane::TogglePinTab",
+      "space 1": ["pane::ActivateItem", 0],
+      "space 2": ["pane::ActivateItem", 1],
+      "space 3": ["pane::ActivateItem", 2],
+      "space 4": ["pane::ActivateItem", 3],
+      "space 5": ["pane::ActivateItem", 4],
+
+      "space g g": "git_panel::ToggleFocus",
+      "space g c": "git::Commit",
+      "space g d": "git::Diff",
+      "space g s": "git_panel::ToggleFocus",
+      "space g p": "git::Push",
+      "space g P": "git::Pull",
+      "space g f": "git::Fetch",
+
+      "space t t": "workspace::NewCenterTerminal",
+      "space t n": "workspace::NewCenterTerminal",
+
+      "space e l": "diagnostics::Deploy"
     }
   },
 
