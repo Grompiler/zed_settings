@@ -3,7 +3,7 @@
 Document de reconstruction. Si une mise à jour de Zed casse quelque chose, ce fichier
 suffit à régénérer `keymap.json` et `settings.json` de zéro.
 
-**Base** : pas de base_keymap (défaut) + `vim_mode: true`.
+**Base** : `base_keymap: "VSCode"` (défaut) + `vim_mode: true`.
 Le socle (enter, tab, backspace, menus, terminal, accords `ctrl-k ctrl-*`) vient du
 keymap de base — ne jamais passer en `"None"`, ce serait à réécrire entièrement.
 
@@ -124,6 +124,13 @@ caractère saisi, donc l'arbre leader `space` y est rejoué presque intégraleme
 But : ne jamais avoir à sortir du terminal ni à toucher la souris. `shift-a`
 repasse en saisie.
 
+Les déplacements `ctrl-h/j/k/l` y sont alignés sur l'éditeur : demi-page bas et
+haut, début et fin de ligne. Ils passent par `SendKeystrokes` qui rejoue les
+touches comprises nativement par le mode vi du terminal (`ctrl-d`, `ctrl-u`, `0`,
+`$`), sans recentrage du curseur — le terminal n'expose pas d'équivalent à `zz`.
+Repli possible si ça casse : `terminal::ScrollPageDown` et `ScrollPageUp`, qui
+font défiler la vue au lieu de déplacer le curseur.
+
 Absents volontairement (sans objet hors éditeur) : `space l` (LSP), `space j`
 (jump), `space ;`, `space *`, les marks `space m a..g`, et `space t v`/`t s` qui
 dépendent d'un enchaînement de touches du leader éditeur.
@@ -174,8 +181,8 @@ dépendent d'un enchaînement de touches du leader éditeur.
     "players": [{ "cursor": "#2e8b57ff", "background": "#2e8b57ff", "selection": "#2e8b5733" }]
   },
   "terminal": { "button": false, "working_directory": "current_project_directory" },
-  "project_panel": { "dock": "right" },
-  "git_panel": { "dock": "right" },
+  "project_panel": { "dock": "left" },
+  "git_panel": { "dock": "left" },
   "outline_panel": { "dock": "right" },
   "scrollbar": { "show": "never" },
   "minimap": { "show": "never" },
