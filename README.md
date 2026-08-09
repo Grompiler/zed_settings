@@ -3,7 +3,7 @@
 Document de reconstruction. Si une mise à jour de Zed casse quelque chose, ce fichier
 suffit à régénérer `keymap.json` et `settings.json` de zéro.
 
-**Base** : `base_keymap: "VSCode"` (défaut) + `vim_mode: true`.
+**Base** : pas de base_keymap (défaut) + `vim_mode: true`.
 Le socle (enter, tab, backspace, menus, terminal, accords `ctrl-k ctrl-*`) vient du
 keymap de base — ne jamais passer en `"None"`, ce serait à réécrire entièrement.
 
