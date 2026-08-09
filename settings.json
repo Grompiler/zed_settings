@@ -7,6 +7,15 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "collaboration_panel": {
+    "dock": "left",
+    "button": false,
+  },
+  "agent": {
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": []
+  },
   "buffer_line_height": {
     "custom": 1.4,
   },
@@ -24,10 +33,11 @@
     },
   },
   "project_panel": {
+    "auto_reveal_entries": false,
     "dock": "right",
   },
   "preferred_line_length": 80,
-  "relative_line_numbers": "enabled",
+  "relative_line_numbers":"enabled",
   "auto_signature_help": true,
   "show_signature_help_after_edits": true,
   "sticky_scroll": {
@@ -43,9 +53,33 @@
     "metrics": false,
   },
   "vim_mode": true,
-  "base_keymap": "None",
+  "vim": {
+    "toggle_relative_line_numbers": false,
+    "use_smartcase_find": true,
+    "highlight_on_yank_duration": 160,
+  },
+  "use_smartcase_search": true,
+  "cursor_blink": false,
   "icon_theme": "Zed (Default)",
   "ui_font_size": 16.0,
   "buffer_font_size": 22.0,
   "theme": "Kanagawa Wave",
+  "terminal": {
+    "button": false,
+    "working_directory": "current_project_directory",
+    "copy_on_select": false,
+    "blinking": "off",
+    "toolbar": {
+      "breadcrumbs": false
+    }
+  },
+  "experimental.theme_overrides": {
+      "players": [
+        {
+          "cursor": "#2e8b57ff",
+          "background": "#2e8b57ff",
+          "selection": "#2e8b5733"
+        }
+      ]
+    },
 }
