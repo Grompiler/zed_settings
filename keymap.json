@@ -67,6 +67,7 @@
       "ctrl-`": null,
       "ctrl-shift-`": null,
       "ctrl-j": null,
+      "ctrl-s": "workspace::SaveWithoutFormat",
       "alt-w": "workspace::CloseActiveDock"
     }
   },
@@ -142,7 +143,27 @@
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "g d": "editor::GoToDefinition"
+      "g d": "editor::GoToDefinition",
+      "g space": null,
+      "shift-space": "editor::OpenExcerpts"
+    }
+  },
+  {
+    "context": "ProjectPanel && not_editing",
+    "bindings": {
+      "shift-space": "project_panel::Open"
+    }
+  },
+  {
+    "context": "OutlinePanel && not_editing",
+    "bindings": {
+      "shift-space": "outline_panel::OpenSelectedEntry"
+    }
+  },
+  {
+    "context": "GitPanel && ChangesList",
+    "bindings": {
+      "shift-space": "menu::Confirm"
     }
   },
   {
@@ -197,7 +218,7 @@
       "space f f": "file_finder::Toggle",
       "space f p": "project_panel::ToggleFocus",
       "space f g": "git::OpenModifiedFiles",
-      "space f s": "workspace::Save",
+      "space f s": "workspace::SaveWithoutFormat",
       "space f S": "workspace::SaveAll",
       "space f n": "workspace::NewFile",
       "space f r": ["workspace::SendKeystrokes", "ctrl-shift-e shift-r"],
@@ -329,7 +350,7 @@
     "bindings": {
       "ctrl-n": null,
       "ctrl-shift-space": null,
-      "shift-escape": "terminal::ToggleViMode",
+      "escape": "terminal::ToggleViMode",
       "ctrl-shift-5": "pane::SplitVertical",
       "ctrl-shift-6": "pane::SplitHorizontal"
     }
@@ -357,7 +378,7 @@
       "space f f": "file_finder::Toggle",
       "space f p": "project_panel::ToggleFocus",
       "space f g": "git::OpenModifiedFiles",
-      "space f s": "workspace::Save",
+      "space f s": "workspace::SaveWithoutFormat",
       "space f S": "workspace::SaveAll",
       "space f n": "workspace::NewFile",
 
@@ -405,8 +426,8 @@
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "space e n": "editor::GoToDiagnostic",
-      "space e p": "editor::GoToPreviousDiagnostic",
+      "space e n": ["editor::GoToDiagnostic", { "severity": { "min": "hint", "max": "error" } }],
+      "space e p": ["editor::GoToPreviousDiagnostic", { "severity": { "min": "hint", "max": "error" } }],
       "space e l": "diagnostics::Deploy"
     }
   },
@@ -421,7 +442,7 @@
     "bindings": {
       "ctrl-space f f": "file_finder::Toggle",
       "ctrl-space f g": "git::OpenModifiedFiles",
-      "ctrl-space f s": "workspace::Save",
+      "ctrl-space f s": "workspace::SaveWithoutFormat",
       "ctrl-space f S": "workspace::SaveAll",
       "ctrl-space f n": "workspace::NewFile",
       "ctrl-space f p": "project_panel::ToggleFocus",
@@ -478,7 +499,9 @@
   {
     "context": "Diagnostics",
     "bindings": {
-      "space w d": "pane::CloseActiveItem"
+      "space w d": "pane::CloseActiveItem",
+      "space e n": ["editor::GoToDiagnostic", { "severity": { "min": "hint", "max": "error" } }],
+      "space e p": ["editor::GoToPreviousDiagnostic", { "severity": { "min": "hint", "max": "error" } }]
     }
   },
 
