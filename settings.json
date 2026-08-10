@@ -7,6 +7,35 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "preview_tabs": {
+    "enabled": true
+  },
+  "tabs": {
+    "show_close_button": "hover",
+    "show_diagnostics": "off",
+    "close_position": "right",
+    "file_icons": false,
+    "git_status": true
+  },
+  "tab_bar": {
+    "show_pinned_tabs_in_separate_row": true,
+    "show_tab_bar_buttons": false,
+    "show_nav_history_buttons": false,
+    "show": true
+  },
+  "wsl_connections": [
+    {
+      "distro_name": "Debian",
+      "user": null,
+      "projects": [
+        {
+          "paths": [
+            "/home/pierre/projects/splitter"
+          ]
+        }
+      ]
+    }
+  ],
   "collaboration_panel": {
     "dock": "left",
     "button": false,
@@ -62,7 +91,7 @@
   "cursor_blink": false,
   "icon_theme": "Zed (Default)",
   "ui_font_size": 16.0,
-  "buffer_font_size": 22.0,
+  "buffer_font_size": 20.0,
   "theme": "Kanagawa Wave",
   "terminal": {
     "button": false,
