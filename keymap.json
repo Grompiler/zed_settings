@@ -67,7 +67,6 @@
       "ctrl-`": null,
       "ctrl-shift-`": null,
       "ctrl-j": null,
-      "ctrl-s": "workspace::SaveWithoutFormat",
       "alt-w": "workspace::CloseActiveDock"
     }
   },
@@ -426,8 +425,8 @@
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "space e n": ["editor::GoToDiagnostic", { "severity": { "min": "hint", "max": "error" } }],
-      "space e p": ["editor::GoToPreviousDiagnostic", { "severity": { "min": "hint", "max": "error" } }],
+      "space e n": "editor::GoToDiagnostic",
+      "space e p": "editor::GoToPreviousDiagnostic",
       "space e l": "diagnostics::Deploy"
     }
   },
@@ -500,8 +499,8 @@
     "context": "Diagnostics",
     "bindings": {
       "space w d": "pane::CloseActiveItem",
-      "space e n": ["editor::GoToDiagnostic", { "severity": { "min": "hint", "max": "error" } }],
-      "space e p": ["editor::GoToPreviousDiagnostic", { "severity": { "min": "hint", "max": "error" } }]
+      "space e n": "editor::GoToDiagnostic",
+      "space e p": "editor::GoToPreviousDiagnostic",
     }
   },
 
