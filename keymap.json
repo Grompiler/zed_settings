@@ -188,6 +188,18 @@
     }
   },
   {
+    // Dans le panneau git uniquement : s / S / u / U pour le staging,
+    // et space libere (il valait git::ToggleStaged dans le keymap de base).
+    "context": "GitPanel && ChangesList && !GitBranchSelector && !GitRepositorySelector",
+    "bindings": {
+      "space": null,
+      "s": "git::StageFile",
+      "shift-s": "git::StageAll",
+      "u": "git::UnstageFile",
+      "shift-u": "git::UnstageAll"
+    }
+  },
+  {
     "context": "vim_mode == normal",
     "bindings": {
       "shift-y": ["workspace::SendKeystrokes", "y $"]
@@ -221,10 +233,9 @@
       "space 5": ["pane::ActivateItem", 4],
 
       "space m m": "editor::ToggleBookmark",
-      "space m a": "editor::ToggleBookmarkWithLabel",
+      "space m N": "editor::ToggleBookmarkWithLabel",
       "space m e": "editor::EditBookmark",
       "space m l": "editor::ViewBookmarks",
-      "space m c": "workspace::ClearBookmarks",
       "space m n": ["action::Sequence", ["editor::GoToNextBookmark", "editor::ScrollCursorCenter"]],
       "space m p": ["action::Sequence", ["editor::GoToPreviousBookmark", "editor::ScrollCursorCenter"]]
     }
