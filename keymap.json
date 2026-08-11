@@ -233,9 +233,10 @@
       "space 5": ["pane::ActivateItem", 4],
 
       "space m m": "editor::ToggleBookmark",
-      "space m N": "editor::ToggleBookmarkWithLabel",
+      "space m a": "editor::ToggleBookmarkWithLabel",
       "space m e": "editor::EditBookmark",
       "space m l": "editor::ViewBookmarks",
+      "space m c": "workspace::ClearBookmarks",
       "space m n": ["action::Sequence", ["editor::GoToNextBookmark", "editor::ScrollCursorCenter"]],
       "space m p": ["action::Sequence", ["editor::GoToPreviousBookmark", "editor::ScrollCursorCenter"]]
     }
