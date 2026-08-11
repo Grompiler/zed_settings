@@ -345,12 +345,14 @@
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "space g g": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-1"],
+      // "space g g": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-1"],
+      "space g g": ["action::Sequence", ["git_panel::ToggleFocus", "git_panel::ActivateChangesTab"]],
       "space g c": "git::Commit",
       "space g d": "git::Diff",
       "space g b": "git::Branch",
       "space g B": "git::Blame",
-      "space g h": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-2"],
+      // "space g h": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-2"],
+      "space g h": ["action::Sequence", ["git_panel::ToggleFocus", "git_panel::ActivateHistoryTab"]],
       "space g s": "git::StageAndNext",
       "space g u": "git::UnstageAndNext",
       "space g p": "git::Push",
@@ -455,7 +457,7 @@
       "space 4": ["pane::ActivateItem", 3],
       "space 5": ["pane::ActivateItem", 4],
 
-      "space g g": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-1"],
+      "space g g": ["action::Sequence", ["git_panel::ToggleFocus", "git_panel::ActivateChangesTab"]],
       "space g c": "git::Commit",
       "space g d": "git::Diff",
       "space g p": "git::Push",
@@ -512,7 +514,7 @@
       "ctrl-space w m": "workspace::CloseAllDocks",
       "ctrl-space w =": "vim::ResetPaneSizes",
 
-      "ctrl-space g g": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-1"],
+      "ctrl-space g g": ["action::Sequence", ["git_panel::ToggleFocus", "git_panel::ActivateChangesTab"]],
       "ctrl-space g c": "git::Commit",
       "ctrl-space g d": "git::Diff",
       "ctrl-space g p": "git::Push",
