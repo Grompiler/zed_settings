@@ -11,7 +11,14 @@
 //  Demi-page centrée = ctrl-j / ctrl-k
 //  Autocomplete      = ctrl-j / ctrl-k (suivant / précédent)
 //  Début/fin ligne   = ctrl-h / ctrl-l
+//  Jumplist centrée  = ctrl-o / ctrl-i
+//  Recherche centrée = n / N / * / #
 //  Docks             = alt-w (ferme celui qui a le focus)
+//
+//  RECENTRAGE : tous les sauts de curseur se terminent par « z z ».
+//  Technique : SendKeystrokes rejoue la touche du keymap de base qui porte
+//  l'action (f12, f8, ] m, alt-left …) puis z z. On ne peut pas rejouer la
+//  touche que l'on est en train de redefinir, ce serait une boucle infinie.
 //
 //  Terminal : center pane uniquement (workspace::NewCenterTerminal).
 //  On neutralise les raccourcis du terminal docké plus bas.
@@ -60,6 +67,7 @@
   //  2. DOCKS + neutralisation du terminal docké
   //     alt-w    : ferme le dock qui a le focus
   //     ctrl-j   : était workspace::ToggleBottomDock (ouvrait le terminal)
+  //     ctrl-o   : était workspace::OpenFiles, il masquait la jumplist
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "Workspace",
@@ -67,25 +75,47 @@
       "ctrl-`": null,
       "ctrl-shift-`": null,
       "ctrl-j": null,
+      "ctrl-o": null,
       "alt-w": "workspace::CloseActiveDock"
     }
   },
 
   // ═════════════════════════════════════════════════════════════════════════
   //  2b. ctrl-h / ctrl-l : début et fin de ligne
+  //      Pas de recentrage : déplacement sur la ligne courante.
+  //      ctrl-i : était editor::ShowSignatureHelp dans le keymap de base.
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "Editor && mode == full",
     "bindings": {
       "ctrl-h": null,
-      "ctrl-l": null
+      "ctrl-l": null,
+      "ctrl-i": null
     }
   },
   {
     "context": "VimControl && !menu",
     "bindings": {
       "ctrl-h": "vim::StartOfLine",
-      "ctrl-l": "vim::EndOfLine"
+      "ctrl-l": "vim::EndOfLine",
+
+      // Jumplist recentrée. alt-left / alt-right portent pane::GoBack et
+      // pane::GoForward dans le keymap de base : on les rejoue, puisqu'on
+      // ne peut pas rejouer ctrl-o / ctrl-i sans boucler.
+      "ctrl-o": ["workspace::SendKeystrokes", "alt-left z z"],
+      "ctrl-i": ["workspace::SendKeystrokes", "alt-right z z"],
+
+      // Recherche et occurrences recentrees. Declencheurs intermediaires :
+      // on ne peut pas rejouer n / N / * / # sans boucler a l'infini.
+      "ctrl-alt-n": "vim::MoveToNextMatch",
+      "ctrl-alt-p": "vim::MoveToPreviousMatch",
+      "ctrl-alt-u": "vim::MoveToNext",
+      "ctrl-alt-d": "vim::MoveToPrevious",
+
+      "n": ["workspace::SendKeystrokes", "ctrl-alt-n z z"],
+      "shift-n": ["workspace::SendKeystrokes", "ctrl-alt-p z z"],
+      "*": ["workspace::SendKeystrokes", "ctrl-alt-u z z"],
+      "#": ["workspace::SendKeystrokes", "ctrl-alt-d z z"]
     }
   },
   {
@@ -136,13 +166,13 @@
 
   // ═════════════════════════════════════════════════════════════════════════
   //  3d. MOTIONS / OPÉRATEURS vim ajustés
-  //      g d  : go to definition (explicite, en plus de space l d)
+  //      g d  : go to definition + recentrage (f12 = binding de base)
   //      Y    : yank du curseur à la fin de ligne (comportement y$)
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "g d": "editor::GoToDefinition",
+      "g d": ["workspace::SendKeystrokes", "f12 z z"],
       "g space": null,
       "shift-space": "editor::OpenExcerpts"
     }
@@ -181,9 +211,7 @@
   //        space 1..5  aller au slot N
   //
   //      Marks vim en complément (position exacte du curseur, pas juste
-  //      le fichier). Lettres A S D F = home row.
-  //        space m a/s/d/f   poser la mark
-  //        space m A/S/D/F   y sauter
+  //      le fichier). Lettres A S D F G = home row. Saut + recentrage.
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
@@ -200,11 +228,11 @@
       "space m d": ["workspace::SendKeystrokes", "m shift-d"],
       "space m f": ["workspace::SendKeystrokes", "m shift-f"],
       "space m g": ["workspace::SendKeystrokes", "m shift-g"],
-      "space m A": ["workspace::SendKeystrokes", "` shift-a"],
-      "space m S": ["workspace::SendKeystrokes", "` shift-s"],
-      "space m D": ["workspace::SendKeystrokes", "` shift-d"],
-      "space m F": ["workspace::SendKeystrokes", "` shift-f"],
-      "space m G": ["workspace::SendKeystrokes", "` shift-g"]
+      "space m A": ["workspace::SendKeystrokes", "` shift-a z z"],
+      "space m S": ["workspace::SendKeystrokes", "` shift-s z z"],
+      "space m D": ["workspace::SendKeystrokes", "` shift-d z z"],
+      "space m F": ["workspace::SendKeystrokes", "` shift-f z z"],
+      "space m G": ["workspace::SendKeystrokes", "` shift-g z z"]
     }
   },
 
@@ -260,39 +288,40 @@
   },
 
   // ═════════════════════════════════════════════════════════════════════════
-  //  6. LEADER — j  JUMP
+  //  6. LEADER — j  JUMP  (tous recentrés)
+  //     Touches rejouées : ] m [ m ] shift-m [ shift-m ] ] [ [ (structure),
+  //     f , (arguments). * et # restent aux defauts vim, sans recentrage.
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
       "space j j": "go_to_line::Toggle",
-      "space j s": "vim::MoveToNext",
-      "space j S": "vim::MoveToPrevious",
-      "space j f": "vim::NextMethodStart",
-      "space j F": "vim::PreviousMethodStart",
-      "space j c": "vim::NextSectionStart",
-      "space j C": "vim::PreviousSectionStart",
-      "space j m": "vim::NextMethodEnd",
-      "space j M": "vim::PreviousMethodEnd",
-      "space j a": ["workspace::SendKeystrokes", "f ,"],
-      "space j A": ["workspace::SendKeystrokes", "shift-f ,"],
-      "space j p": ["workspace::SendKeystrokes", "f ,"],
-      "space j P": ["workspace::SendKeystrokes", "shift-f ,"]
+      "space j f": ["workspace::SendKeystrokes", "] m z z"],
+      "space j F": ["workspace::SendKeystrokes", "[ m z z"],
+      "space j c": ["workspace::SendKeystrokes", "] ] z z"],
+      "space j C": ["workspace::SendKeystrokes", "[ [ z z"],
+      "space j m": ["workspace::SendKeystrokes", "] shift-m z z"],
+      "space j M": ["workspace::SendKeystrokes", "[ shift-m z z"],
+      "space j a": ["workspace::SendKeystrokes", "f , z z"],
+      "space j A": ["workspace::SendKeystrokes", "shift-f , z z"],
+      "space j p": ["workspace::SendKeystrokes", "f , z z"],
+      "space j P": ["workspace::SendKeystrokes", "shift-f , z z"]
     }
   },
 
   // ═════════════════════════════════════════════════════════════════════════
   //  7. LEADER — l  LSP
+  //     Sauts recentrés : d (f12), i (ctrl-f12), t (g y).
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
       "space l f": "editor::Format",
       "space l r": "editor::Rename",
-      "space l d": "editor::GoToDefinition",
+      "space l d": ["workspace::SendKeystrokes", "f12 z z"],
       "space l R": "editor::FindAllReferences",
-      "space l i": "editor::GoToImplementation",
-      "space l t": "editor::GoToTypeDefinition",
+      "space l i": ["workspace::SendKeystrokes", "ctrl-f12 z z"],
+      "space l t": ["workspace::SendKeystrokes", "g y z z"],
       "space l a": "editor::ToggleCodeActions",
       "space l h": "editor::Hover"
     }
@@ -363,6 +392,7 @@
       // Deplacements alignes sur l'editeur. On rejoue les touches que le
       // mode vi du terminal comprend nativement : ctrl-d / ctrl-u pour la
       // demi-page, 0 et $ pour le debut et la fin de ligne.
+      // Pas de z z ici : le mode vi du terminal n'a pas d'equivalent.
       "ctrl-j": ["workspace::SendKeystrokes", "ctrl-d"],
       "ctrl-k": ["workspace::SendKeystrokes", "ctrl-u"],
       "ctrl-h": ["workspace::SendKeystrokes", "0"],
@@ -421,13 +451,13 @@
   },
 
   // ═════════════════════════════════════════════════════════════════════════
-  //  11. LEADER — e  ERRORS
+  //  11. LEADER — e  ERRORS  (sauts recentrés, f8 / shift-f8 de base)
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "space e n": "editor::GoToDiagnostic",
-      "space e p": "editor::GoToPreviousDiagnostic",
+      "space e n": ["workspace::SendKeystrokes", "f8 z z"],
+      "space e p": ["workspace::SendKeystrokes", "shift-f8 z z"],
       "space e l": "diagnostics::Deploy"
     }
   },
@@ -489,6 +519,9 @@
   //      L'action est passée SANS argument : c'est la signature que l'UI
   //      interroge pour afficher un raccourci. Avec { close_pinned: false }
   //      elle ne correspond pas et Zed affiche autre chose.
+  //
+  //      Pas de z z dans le contexte Diagnostics : VimControl n'y est pas
+  //      actif, la touche z n'y ferait rien.
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
@@ -501,7 +534,7 @@
     "bindings": {
       "space w d": "pane::CloseActiveItem",
       "space e n": "editor::GoToDiagnostic",
-      "space e p": "editor::GoToPreviousDiagnostic",
+      "space e p": "editor::GoToPreviousDiagnostic"
     }
   },
 
