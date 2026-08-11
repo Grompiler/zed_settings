@@ -196,7 +196,8 @@
       "s": "git::StageFile",
       "shift-s": "git::StageAll",
       "u": "git::UnstageFile",
-      "shift-u": "git::UnstageAll"
+      "shift-u": "git::UnstageAll",
+      "d": ["git::RestoreFile", { "skip_prompt": false }]
     }
   },
   {
@@ -233,10 +234,9 @@
       "space 5": ["pane::ActivateItem", 4],
 
       "space m m": "editor::ToggleBookmark",
-      "space m a": "editor::ToggleBookmarkWithLabel",
+      "space m N": "editor::ToggleBookmarkWithLabel",
       "space m e": "editor::EditBookmark",
       "space m l": "editor::ViewBookmarks",
-      "space m c": "workspace::ClearBookmarks",
       "space m n": ["action::Sequence", ["editor::GoToNextBookmark", "editor::ScrollCursorCenter"]],
       "space m p": ["action::Sequence", ["editor::GoToPreviousBookmark", "editor::ScrollCursorCenter"]]
     }
@@ -344,16 +344,30 @@
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "space g g": "git_panel::ToggleFocus",
+      "space g g": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-1"],
       "space g c": "git::Commit",
       "space g d": "git::Diff",
       "space g b": "git::Branch",
       "space g B": "git::Blame",
       "space g h": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-2"],
-      "space g s": "git_panel::ToggleFocus",
+      "space g s": "git::StageAndNext",
+      "space g u": "git::UnstageAndNext",
       "space g p": "git::Push",
       "space g P": "git::Pull",
       "space g f": "git::Fetch"
+    }
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  //  8b. Neutralisation des anciens raccourcis de staging du keymap de base.
+  //      space g s / space g u les remplacent (section 8) et couvrent aussi
+  //      bien la vue git diff qu'un buffer de code ordinaire.
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    "context": "Editor && !agent_diff",
+    "bindings": {
+      "alt-y": null,
+      "shift-alt-y": null
     }
   },
 
