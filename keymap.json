@@ -234,9 +234,10 @@
       "space 5": ["pane::ActivateItem", 4],
 
       "space m m": "editor::ToggleBookmark",
-      "space m N": "editor::ToggleBookmarkWithLabel",
+      "space m a": "editor::ToggleBookmarkWithLabel",
       "space m e": "editor::EditBookmark",
       "space m l": "editor::ViewBookmarks",
+      "space m c": "workspace::ClearBookmarks",
       "space m n": ["action::Sequence", ["editor::GoToNextBookmark", "editor::ScrollCursorCenter"]],
       "space m p": ["action::Sequence", ["editor::GoToPreviousBookmark", "editor::ScrollCursorCenter"]]
     }
@@ -457,7 +458,6 @@
       "space g g": "git_panel::ToggleFocus",
       "space g c": "git::Commit",
       "space g d": "git::Diff",
-      "space g s": "git_panel::ToggleFocus",
       "space g p": "git::Push",
       "space g P": "git::Pull",
       "space g f": "git::Fetch",
@@ -515,7 +515,6 @@
       "ctrl-space g g": "git_panel::ToggleFocus",
       "ctrl-space g c": "git::Commit",
       "ctrl-space g d": "git::Diff",
-      "ctrl-space g s": "git_panel::ToggleFocus",
       "ctrl-space g p": "git::Push",
       "ctrl-space g P": "git::Pull",
       "ctrl-space g f": "git::Fetch",
