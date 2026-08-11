@@ -455,7 +455,7 @@
       "space 4": ["pane::ActivateItem", 3],
       "space 5": ["pane::ActivateItem", 4],
 
-      "space g g": "git_panel::ToggleFocus",
+      "space g g": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-1"],
       "space g c": "git::Commit",
       "space g d": "git::Diff",
       "space g p": "git::Push",
@@ -512,7 +512,7 @@
       "ctrl-space w m": "workspace::CloseAllDocks",
       "ctrl-space w =": "vim::ResetPaneSizes",
 
-      "ctrl-space g g": "git_panel::ToggleFocus",
+      "ctrl-space g g": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-1"],
       "ctrl-space g c": "git::Commit",
       "ctrl-space g d": "git::Diff",
       "ctrl-space g p": "git::Push",
