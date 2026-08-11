@@ -12,13 +12,14 @@
 //  Autocomplete      = ctrl-j / ctrl-k (suivant / précédent)
 //  Début/fin ligne   = ctrl-h / ctrl-l
 //  Jumplist centrée  = ctrl-o / ctrl-i
-//  Recherche centrée = n / N / * / #
+//  Recherche centrée = n / N
 //  Docks             = alt-w (ferme celui qui a le focus)
 //
-//  RECENTRAGE : tous les sauts de curseur se terminent par « z z ».
-//  Technique : SendKeystrokes rejoue la touche du keymap de base qui porte
-//  l'action (f12, f8, ] m, alt-left …) puis z z. On ne peut pas rejouer la
-//  touche que l'on est en train de redefinir, ce serait une boucle infinie.
+//  RECENTRAGE : les sauts de curseur enchainent l'action puis
+//  editor::ScrollCursorCenter via action::Sequence. Plus de dependance aux
+//  touches du keymap de base, donc rien a reverifier apres une mise a jour.
+//  SendKeystrokes ne reste que la ou une touche litterale est indispensable
+//  (marks, find sur caractere, enchainements multi-vues).
 //
 //  Terminal : center pane uniquement (workspace::NewCenterTerminal).
 //  On neutralise les raccourcis du terminal docké plus bas.
@@ -44,8 +45,8 @@
   {
     "context": "VimControl && !menu && !showing_completions && !showing_code_actions",
     "bindings": {
-      "ctrl-j": ["workspace::SendKeystrokes", "ctrl-d z z"],
-      "ctrl-k": ["workspace::SendKeystrokes", "ctrl-u z z"]
+      "ctrl-j": ["action::Sequence", ["vim::ScrollDown", "editor::ScrollCursorCenter"]],
+      "ctrl-k": ["action::Sequence", ["vim::ScrollUp", "editor::ScrollCursorCenter"]]
     }
   },
 
@@ -99,23 +100,14 @@
       "ctrl-h": "vim::StartOfLine",
       "ctrl-l": "vim::EndOfLine",
 
-      // Jumplist recentrée. alt-left / alt-right portent pane::GoBack et
-      // pane::GoForward dans le keymap de base : on les rejoue, puisqu'on
-      // ne peut pas rejouer ctrl-o / ctrl-i sans boucler.
-      "ctrl-o": ["workspace::SendKeystrokes", "alt-left z z"],
-      "ctrl-i": ["workspace::SendKeystrokes", "alt-right z z"],
+      // Jumplist recentrée.
+      "ctrl-o": ["action::Sequence", ["pane::GoBack", "editor::ScrollCursorCenter"]],
+      "ctrl-i": ["action::Sequence", ["pane::GoForward", "editor::ScrollCursorCenter"]],
 
-      // Recherche et occurrences recentrees. Declencheurs intermediaires :
-      // on ne peut pas rejouer n / N / * / # sans boucler a l'infini.
-      "ctrl-alt-n": "vim::MoveToNextMatch",
-      "ctrl-alt-p": "vim::MoveToPreviousMatch",
-      "ctrl-alt-u": "vim::MoveToNext",
-      "ctrl-alt-d": "vim::MoveToPrevious",
+      // Recherche recentree.
+      "n": ["action::Sequence", ["vim::MoveToNextMatch", "editor::ScrollCursorCenter"]],
+      "shift-n": ["action::Sequence", ["vim::MoveToPreviousMatch", "editor::ScrollCursorCenter"]]
 
-      "n": ["workspace::SendKeystrokes", "ctrl-alt-n z z"],
-      "shift-n": ["workspace::SendKeystrokes", "ctrl-alt-p z z"],
-      "*": ["workspace::SendKeystrokes", "ctrl-alt-u z z"],
-      "#": ["workspace::SendKeystrokes", "ctrl-alt-d z z"]
     }
   },
   {
@@ -166,13 +158,13 @@
 
   // ═════════════════════════════════════════════════════════════════════════
   //  3d. MOTIONS / OPÉRATEURS vim ajustés
-  //      g d  : go to definition + recentrage (f12 = binding de base)
+  //      g d  : go to definition + recentrage
   //      Y    : yank du curseur à la fin de ligne (comportement y$)
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "g d": ["workspace::SendKeystrokes", "f12 z z"],
+      "g d": ["action::Sequence", ["editor::GoToDefinition", "editor::ScrollCursorCenter"]],
       "g space": null,
       "shift-space": "editor::OpenExcerpts"
     }
@@ -207,32 +199,34 @@
   //
   //      Slots = onglets épinglés. Un onglet épinglé se range à gauche et
   //      garde sa position, donc pane::ActivateItem N est stable.
-  //        space m m   épingler / désépingler l'onglet courant
+  //
+  //        space m t   épingler / désépingler l'onglet
   //        space 1..5  aller au slot N
   //
-  //      Marks vim en complément (position exacte du curseur, pas juste
-  //      le fichier). Lettres A S D F G = home row. Saut + recentrage.
+  //      Bookmarks Zed pour marquer une ligne précise :
+  //        space m m   poser / retirer un bookmark
+  //        space m N   poser un bookmark avec un libellé
+  //        space m e   modifier le libellé du bookmark courant
+  //        space m l   liste des bookmarks du projet
+  //        space m n / p   bookmark suivant / précédent (recentré)
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "space m m": "pane::TogglePinTab",
+      "space m t": "pane::TogglePinTab",
       "space 1": ["pane::ActivateItem", 0],
       "space 2": ["pane::ActivateItem", 1],
       "space 3": ["pane::ActivateItem", 2],
       "space 4": ["pane::ActivateItem", 3],
       "space 5": ["pane::ActivateItem", 4],
 
-      "space m a": ["workspace::SendKeystrokes", "m shift-a"],
-      "space m s": ["workspace::SendKeystrokes", "m shift-s"],
-      "space m d": ["workspace::SendKeystrokes", "m shift-d"],
-      "space m f": ["workspace::SendKeystrokes", "m shift-f"],
-      "space m g": ["workspace::SendKeystrokes", "m shift-g"],
-      "space m A": ["workspace::SendKeystrokes", "` shift-a z z"],
-      "space m S": ["workspace::SendKeystrokes", "` shift-s z z"],
-      "space m D": ["workspace::SendKeystrokes", "` shift-d z z"],
-      "space m F": ["workspace::SendKeystrokes", "` shift-f z z"],
-      "space m G": ["workspace::SendKeystrokes", "` shift-g z z"]
+      "space m m": "editor::ToggleBookmark",
+      "space m a": "editor::ToggleBookmarkWithLabel",
+      "space m e": "editor::EditBookmark",
+      "space m l": "editor::ViewBookmarks",
+      "space m c": "workspace::ClearBookmarks",
+      "space m n": ["action::Sequence", ["editor::GoToNextBookmark", "editor::ScrollCursorCenter"]],
+      "space m p": ["action::Sequence", ["editor::GoToPreviousBookmark", "editor::ScrollCursorCenter"]]
     }
   },
 
@@ -255,7 +249,7 @@
 
   // ═════════════════════════════════════════════════════════════════════════
   //  4. LEADER — b  BUFFERS
-  //     La fermeture est unifiée sur space w d (voir section 5) : pas de
+  //     La fermeture est unifiée sur space w d (section 13) : pas de
   //     space b d, sinon Zed affiche l'un ou l'autre au hasard dans l'UI.
   // ═════════════════════════════════════════════════════════════════════════
   {
@@ -289,19 +283,18 @@
 
   // ═════════════════════════════════════════════════════════════════════════
   //  6. LEADER — j  JUMP  (tous recentrés)
-  //     Touches rejouées : ] m [ m ] shift-m [ shift-m ] ] [ [ (structure),
-  //     f , (arguments). * et # restent aux defauts vim, sans recentrage.
+  //     Structure via action::Sequence ; arguments via f , (SendKeystrokes).
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
       "space j j": "go_to_line::Toggle",
-      "space j f": ["workspace::SendKeystrokes", "] m z z"],
-      "space j F": ["workspace::SendKeystrokes", "[ m z z"],
-      "space j c": ["workspace::SendKeystrokes", "] ] z z"],
-      "space j C": ["workspace::SendKeystrokes", "[ [ z z"],
-      "space j m": ["workspace::SendKeystrokes", "] shift-m z z"],
-      "space j M": ["workspace::SendKeystrokes", "[ shift-m z z"],
+      "space j f": ["action::Sequence", ["vim::NextMethodStart", "editor::ScrollCursorCenter"]],
+      "space j F": ["action::Sequence", ["vim::PreviousMethodStart", "editor::ScrollCursorCenter"]],
+      "space j c": ["action::Sequence", ["vim::NextSectionStart", "editor::ScrollCursorCenter"]],
+      "space j C": ["action::Sequence", ["vim::PreviousSectionStart", "editor::ScrollCursorCenter"]],
+      "space j m": ["action::Sequence", ["vim::NextMethodEnd", "editor::ScrollCursorCenter"]],
+      "space j M": ["action::Sequence", ["vim::PreviousMethodEnd", "editor::ScrollCursorCenter"]],
       "space j a": ["workspace::SendKeystrokes", "f , z z"],
       "space j A": ["workspace::SendKeystrokes", "shift-f , z z"],
       "space j p": ["workspace::SendKeystrokes", "f , z z"],
@@ -311,17 +304,17 @@
 
   // ═════════════════════════════════════════════════════════════════════════
   //  7. LEADER — l  LSP
-  //     Sauts recentrés : d (f12), i (ctrl-f12), t (g y).
+  //     Sauts recentrés : d, i, t.
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
       "space l f": "editor::Format",
       "space l r": "editor::Rename",
-      "space l d": ["workspace::SendKeystrokes", "f12 z z"],
+      "space l d": ["action::Sequence", ["editor::GoToDefinition", "editor::ScrollCursorCenter"]],
       "space l R": "editor::FindAllReferences",
-      "space l i": ["workspace::SendKeystrokes", "ctrl-f12 z z"],
-      "space l t": ["workspace::SendKeystrokes", "g y z z"],
+      "space l i": ["action::Sequence", ["editor::GoToImplementation", "editor::ScrollCursorCenter"]],
+      "space l t": ["action::Sequence", ["editor::GoToTypeDefinition", "editor::ScrollCursorCenter"]],
       "space l a": "editor::ToggleCodeActions",
       "space l h": "editor::Hover"
     }
@@ -428,7 +421,7 @@
       "space w m": "workspace::CloseAllDocks",
       "space w =": "vim::ResetPaneSizes",
 
-      "space m m": "pane::TogglePinTab",
+      "space m t": "pane::TogglePinTab",
       "space 1": ["pane::ActivateItem", 0],
       "space 2": ["pane::ActivateItem", 1],
       "space 3": ["pane::ActivateItem", 2],
@@ -451,13 +444,13 @@
   },
 
   // ═════════════════════════════════════════════════════════════════════════
-  //  11. LEADER — e  ERRORS  (sauts recentrés, f8 / shift-f8 de base)
+  //  11. LEADER — e  ERRORS  (sauts recentrés)
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "space e n": ["workspace::SendKeystrokes", "f8 z z"],
-      "space e p": ["workspace::SendKeystrokes", "shift-f8 z z"],
+      "space e n": ["action::Sequence", ["editor::GoToDiagnostic", "editor::ScrollCursorCenter"]],
+      "space e p": ["action::Sequence", ["editor::GoToPreviousDiagnostic", "editor::ScrollCursorCenter"]],
       "space e l": "diagnostics::Deploy"
     }
   },
@@ -520,15 +513,9 @@
   //      interroge pour afficher un raccourci. Avec { close_pinned: false }
   //      elle ne correspond pas et Zed affiche autre chose.
   //
-  //      Pas de z z dans le contexte Diagnostics : VimControl n'y est pas
-  //      actif, la touche z n'y ferait rien.
+  //      Le contexte Diagnostics n'herite pas de VimControl : il faut y
+  //      redeclarer ce que l'on veut voir fonctionner.
   // ═════════════════════════════════════════════════════════════════════════
-  {
-    "context": "VimControl && !menu",
-    "bindings": {
-      "space w d": "pane::CloseActiveItem"
-    }
-  },
   {
     "context": "Diagnostics",
     "bindings": {
