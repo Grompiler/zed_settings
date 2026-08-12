@@ -25,24 +25,6 @@
     "show_nav_history_buttons": false,
     "show": true
   },
-  "wsl_connections": [
-    {
-      "distro_name": "Debian",
-      "user": null,
-      "projects": [
-        {
-          "paths": [
-            "/home/pierre/projects/splitter"
-          ]
-        },
-        {
-          "paths": [
-            "/home/pierre/projects/zed_settings/./"
-          ]
-        }
-      ]
-    }
-  ],
   "collaboration_panel": {
     "dock": "left",
     "button": false,
