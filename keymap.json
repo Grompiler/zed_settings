@@ -7,7 +7,7 @@
 //
 //  LEADER            = space       (VimControl : normal + visual)
 //  LEADER SECONDAIRE = ctrl-space  (insert, terminal, panneaux)
-//  Navigation panes  = alt-h/j/k/l (partout, terminal inclus)
+//  Resize panes      = alt-h/j/k/l
 //  Demi-page centrée = ctrl-j / ctrl-k
 //  Autocomplete      = ctrl-j / ctrl-k (suivant / précédent)
 //  Début/fin ligne   = ctrl-h / ctrl-l
@@ -19,27 +19,30 @@
 //  editor::ScrollCursorCenter via action::Sequence. Plus de dependance aux
 //  touches du keymap de base, donc rien a reverifier apres une mise a jour.
 //  SendKeystrokes ne reste que la ou une touche litterale est indispensable
-//  (marks, find sur caractere, enchainements multi-vues).
+//  (find sur caractere, enchainements multi-vues).
 //
 //  Terminal : center pane uniquement (workspace::NewCenterTerminal).
 //  On neutralise les raccourcis du terminal docké plus bas.
 // ═══════════════════════════════════════════════════════════════════════════
 [
   // ═════════════════════════════════════════════════════════════════════════
-  //  0. GLOBAL — navigation entre panes, valable partout
+  //  0. RESIZE des panes — alt-h/j/k/l
+  //     Contexte repris de vim.json (bloc ctrl-w) : les actions vim::Resize*
+  //     n'existent pas dans un terminal en saisie. Pour naviguer entre panes,
+  //     voir space w h/j/k/l et ctrl-space w h/j/k/l.
   // ═════════════════════════════════════════════════════════════════════════
   {
+    "context": "VimControl && !menu || !Editor && !Terminal",
     "bindings": {
-      "alt-h": "workspace::ActivatePaneLeft",
-      "alt-j": "workspace::ActivatePaneDown",
-      "alt-k": "workspace::ActivatePaneUp",
-      "alt-l": "workspace::ActivatePaneRight"
+      "alt-h": "vim::ResizePaneLeft",
+      "alt-j": "vim::ResizePaneDown",
+      "alt-k": "vim::ResizePaneUp",
+      "alt-l": "vim::ResizePaneRight"
     }
   },
 
   // ═════════════════════════════════════════════════════════════════════════
   //  1. SCROLL — demi-page + recentrage vertical du curseur
-  //     ctrl-j = ctrl-d puis zz    /    ctrl-k = ctrl-u puis zz
   //     Désactivé quand une popup de complétion est ouverte (section 14).
   // ═════════════════════════════════════════════════════════════════════════
   {
@@ -107,7 +110,6 @@
       // Recherche recentree.
       "n": ["action::Sequence", ["vim::MoveToNextMatch", "editor::ScrollCursorCenter"]],
       "shift-n": ["action::Sequence", ["vim::MoveToPreviousMatch", "editor::ScrollCursorCenter"]]
-
     }
   },
   {
@@ -189,7 +191,7 @@
   },
   {
     // Dans le panneau git uniquement : s / S / u / U pour le staging,
-    // et space libere (il valait git::ToggleStaged dans le keymap de base).
+    // d pour discard, et space libere (il valait git::ToggleStaged).
     "context": "GitPanel && ChangesList && !GitBranchSelector && !GitRepositorySelector",
     "bindings": {
       "space": null,
@@ -218,9 +220,10 @@
   //
   //      Bookmarks Zed pour marquer une ligne précise :
   //        space m m   poser / retirer un bookmark
-  //        space m N   poser un bookmark avec un libellé
+  //        space m a   poser un bookmark avec un libellé
   //        space m e   modifier le libellé du bookmark courant
   //        space m l   liste des bookmarks du projet
+  //        space m c   effacer tous les bookmarks
   //        space m n / p   bookmark suivant / précédent (recentré)
   // ═════════════════════════════════════════════════════════════════════════
   {
@@ -262,8 +265,8 @@
 
   // ═════════════════════════════════════════════════════════════════════════
   //  4. LEADER — b  BUFFERS
-  //     La fermeture est unifiée sur space w d (section 13) : pas de
-  //     space b d, sinon Zed affiche l'un ou l'autre au hasard dans l'UI.
+  //     La fermeture est unifiée sur space w d : pas de space b d, sinon
+  //     Zed affiche l'un ou l'autre au hasard dans l'UI.
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
@@ -286,11 +289,41 @@
       "space w l": "workspace::ActivatePaneRight",
       "space w /": "pane::SplitVertical",
       "space w -": "pane::SplitHorizontal",
+      "space w _": "pane::SplitHorizontal",
       "space w d": "pane::CloseActiveItem",
       "space w o": "workspace::CloseInactiveTabsAndPanes",
       "space w z": "workspace::ToggleZoom",
       "space w m": "workspace::CloseAllDocks",
       "space w =": "vim::ResetPaneSizes"
+    }
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  //  5b. OVERRIDE des space w du keymap de base
+  //      vim.json binde space w q (fermer) dans deux contextes que le bloc
+  //      VimControl ci-dessus ne couvre pas. On les neutralise et on y
+  //      redeclare space w d.
+  //
+  //      Ce que ces deux blocs desactivent :
+  //        space w q  (helix + hors editeur) : pane::CloseActiveItem
+  //        space w d  (helix)                : pane::SplitDown
+  //      Restent intacts en helix : space w v / s / r (splits), h j k l.
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    "context": "(vim_mode == helix_normal || vim_mode == helix_select) && !menu",
+    "bindings": {
+      "space w q": null,
+      "space w d": "pane::CloseActiveItem",
+      "space w /": "pane::SplitVertical",
+      "space w -": "pane::SplitHorizontal",
+      "space w _": "pane::SplitHorizontal"
+    }
+  },
+  {
+    "context": "!Editor && !Terminal",
+    "bindings": {
+      "space w q": null,
+      "space w d": "pane::CloseActiveItem"
     }
   },
 
@@ -341,22 +374,22 @@
 
   // ═════════════════════════════════════════════════════════════════════════
   //  8. LEADER — g  GIT
+  //     p = push, P = force push, F = fetch-pull (pull)
   // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
       "space g g": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-1"],
-      // "space g g": ["action::Sequence", ["git_panel::ToggleFocus", "git_panel::ActivateChangesTab"]],
       "space g c": "git::Commit",
       "space g d": "git::Diff",
       "space g b": "git::Branch",
       "space g B": "git::Blame",
       "space g h": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-2"],
-      // "space g h": ["action::Sequence", ["git_panel::ToggleFocus", "git_panel::ActivateHistoryTab"]],
       "space g s": "git::StageAndNext",
       "space g u": "git::UnstageAndNext",
       "space g p": "git::Push",
-      "space g P": "git::Pull",
+      "space g P": "git::ForcePush",
+      "space g F": "git::Pull",
       "space g f": "git::Fetch"
     }
   },
@@ -444,6 +477,7 @@
       "space w l": "workspace::ActivatePaneRight",
       "space w /": "pane::SplitVertical",
       "space w -": "pane::SplitHorizontal",
+      "space w _": "pane::SplitHorizontal",
       "space w d": "pane::CloseActiveItem",
       "space w o": "workspace::CloseInactiveTabsAndPanes",
       "space w z": "workspace::ToggleZoom",
@@ -461,7 +495,8 @@
       "space g c": "git::Commit",
       "space g d": "git::Diff",
       "space g p": "git::Push",
-      "space g P": "git::Pull",
+      "space g P": "git::ForcePush",
+      "space g F": "git::Pull",
       "space g f": "git::Fetch",
 
       "space t t": "workspace::NewCenterTerminal",
@@ -508,6 +543,7 @@
       "ctrl-space w l": "workspace::ActivatePaneRight",
       "ctrl-space w /": "pane::SplitVertical",
       "ctrl-space w -": "pane::SplitHorizontal",
+      "ctrl-space w _": "pane::SplitHorizontal",
       "ctrl-space w d": "pane::CloseActiveItem",
       "ctrl-space w o": "workspace::CloseInactiveTabsAndPanes",
       "ctrl-space w z": "workspace::ToggleZoom",
@@ -518,7 +554,8 @@
       "ctrl-space g c": "git::Commit",
       "ctrl-space g d": "git::Diff",
       "ctrl-space g p": "git::Push",
-      "ctrl-space g P": "git::Pull",
+      "ctrl-space g P": "git::ForcePush",
+      "ctrl-space g F": "git::Pull",
       "ctrl-space g f": "git::Fetch",
 
       "ctrl-space /": "pane::DeploySearch",
@@ -534,13 +571,7 @@
   },
 
   // ═════════════════════════════════════════════════════════════════════════
-  //  13. FERMETURE — déclarée en dernier pour que ce soit ce raccourci
-  //      que Zed affiche dans l'UI (onglets, diagnostics, tooltips).
-  //      L'action est passée SANS argument : c'est la signature que l'UI
-  //      interroge pour afficher un raccourci. Avec { close_pinned: false }
-  //      elle ne correspond pas et Zed affiche autre chose.
-  //
-  //      Le contexte Diagnostics n'herite pas de VimControl : il faut y
+  //  13. Le contexte Diagnostics n'herite pas de VimControl : il faut y
   //      redeclarer ce que l'on veut voir fonctionner.
   // ═════════════════════════════════════════════════════════════════════════
   {
