@@ -1,36 +1,20 @@
-// ═══════════════════════════════════════════════════════════════════════════
-//  ~/.config/zed/keymap.json
+// ~/.config/zed/keymap.json — couche Doom/Spacemacs
 //
-//  base_keymap : "VSCode" (défaut) + vim_mode : true
-//  Le socle (enter/tab/backspace/menus/terminal) vient du keymap de base,
-//  ce fichier ne contient plus que la couche Doom/Spacemacs.
+//   LEADER      space        (normal + visual)
+//   LEADER 2    ctrl-space   (insert, terminal, panneaux)
+//   resize      alt-h/j/k/l        dock actif   alt-w
+//   scroll      ctrl-j/k           ligne        ctrl-h/l
+//   jumplist    ctrl-o/i           recherche    n / N
 //
-//  LEADER            = space       (VimControl : normal + visual)
-//  LEADER SECONDAIRE = ctrl-space  (insert, terminal, panneaux)
-//  Resize panes      = alt-h/j/k/l
-//  Demi-page centrée = ctrl-j / ctrl-k
-//  Autocomplete      = ctrl-j / ctrl-k (suivant / précédent)
-//  Début/fin ligne   = ctrl-h / ctrl-l
-//  Jumplist centrée  = ctrl-o / ctrl-i
-//  Recherche centrée = n / N
-//  Docks             = alt-w (ferme celui qui a le focus)
+// Les sauts de curseur sont recentres via
+// ["action::Sequence", [<action>, "editor::ScrollCursorCenter"]].
+// SendKeystrokes ne sert que pour les touches litterales et les
+// enchainements multi-vues.
 //
-//  RECENTRAGE : les sauts de curseur enchainent l'action puis
-//  editor::ScrollCursorCenter via action::Sequence. Plus de dependance aux
-//  touches du keymap de base, donc rien a reverifier apres une mise a jour.
-//  SendKeystrokes ne reste que la ou une touche litterale est indispensable
-//  (find sur caractere, enchainements multi-vues).
-//
-//  Terminal : center pane uniquement (workspace::NewCenterTerminal).
-//  On neutralise les raccourcis du terminal docké plus bas.
-// ═══════════════════════════════════════════════════════════════════════════
+// Terminal en center pane uniquement ; les chemins vers le dock terminal
+// sont mis a null.
 [
-  // ═════════════════════════════════════════════════════════════════════════
-  //  0. RESIZE des panes — alt-h/j/k/l
-  //     Contexte repris de vim.json (bloc ctrl-w) : les actions vim::Resize*
-  //     n'existent pas dans un terminal en saisie. Pour naviguer entre panes,
-  //     voir space w h/j/k/l et ctrl-space w h/j/k/l.
-  // ═════════════════════════════════════════════════════════════════════════
+  // Resize. Contexte repris de vim.json : inactif dans un terminal en saisie.
   {
     "context": "VimControl && !menu || !Editor && !Terminal",
     "bindings": {
@@ -40,11 +24,6 @@
       "alt-l": "vim::ResizePaneRight"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  1. SCROLL — demi-page + recentrage vertical du curseur
-  //     Désactivé quand une popup de complétion est ouverte (section 14).
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu && !showing_completions && !showing_code_actions",
     "bindings": {
@@ -52,27 +31,16 @@
       "ctrl-k": ["action::Sequence", ["vim::ScrollUp", "editor::ScrollCursorCenter"]]
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  1b. FIND multiligne — f / t / F / T continuent sur les lignes suivantes
-  //      ; et , héritent automatiquement du flag du dernier find.
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "f": ["vim::PushFindForward", { "before": false, "multiline": true }],
-      "t": ["vim::PushFindForward", { "before": true, "multiline": true }],
-      "shift-f": ["vim::PushFindBackward", { "after": false, "multiline": true }],
-      "shift-t": ["vim::PushFindBackward", { "after": true, "multiline": true }]
+      "f": ["vim::PushFindForward", {"before": false, "multiline": true}],
+      "t": ["vim::PushFindForward", {"before": true, "multiline": true}],
+      "shift-f": ["vim::PushFindBackward", {"after": false, "multiline": true}],
+      "shift-t": ["vim::PushFindBackward", {"after": true, "multiline": true}]
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  2. DOCKS + neutralisation du terminal docké
-  //     alt-w    : ferme le dock qui a le focus
-  //     ctrl-j   : était workspace::ToggleBottomDock (ouvrait le terminal)
-  //     ctrl-o   : était workspace::OpenFiles, il masquait la jumplist
-  // ═════════════════════════════════════════════════════════════════════════
+  // ctrl-j valait ToggleBottomDock, ctrl-o valait OpenFiles.
   {
     "context": "Workspace",
     "bindings": {
@@ -83,12 +51,7 @@
       "alt-w": "workspace::CloseActiveDock"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  2b. ctrl-h / ctrl-l : début et fin de ligne
-  //      Pas de recentrage : déplacement sur la ligne courante.
-  //      ctrl-i : était editor::ShowSignatureHelp dans le keymap de base.
-  // ═════════════════════════════════════════════════════════════════════════
+  // ctrl-h = rechercher-remplacer, ctrl-l = SelectLine, ctrl-i = signature.
   {
     "context": "Editor && mode == full",
     "bindings": {
@@ -102,12 +65,8 @@
     "bindings": {
       "ctrl-h": "vim::StartOfLine",
       "ctrl-l": "vim::EndOfLine",
-
-      // Jumplist recentrée.
       "ctrl-o": ["action::Sequence", ["pane::GoBack", "editor::ScrollCursorCenter"]],
       "ctrl-i": ["action::Sequence", ["pane::GoForward", "editor::ScrollCursorCenter"]],
-
-      // Recherche recentree.
       "n": ["action::Sequence", ["vim::MoveToNextMatch", "editor::ScrollCursorCenter"]],
       "shift-n": ["action::Sequence", ["vim::MoveToPreviousMatch", "editor::ScrollCursorCenter"]]
     }
@@ -115,14 +74,10 @@
   {
     "context": "Editor && vim_mode == insert",
     "bindings": {
-      "ctrl-h": ["editor::MoveToBeginningOfLine", { "stop_at_soft_wraps": true, "stop_at_indent": true }],
-      "ctrl-l": ["editor::MoveToEndOfLine", { "stop_at_soft_wraps": true }]
+      "ctrl-h": ["editor::MoveToBeginningOfLine", {"stop_at_soft_wraps": true, "stop_at_indent": true}],
+      "ctrl-l": ["editor::MoveToEndOfLine", {"stop_at_soft_wraps": true}]
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  3a. LEADER — accès direct
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
@@ -139,12 +94,6 @@
       "space *": "pane::DeploySearch"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  3c. TOGGLE COMMENT — space ;
-  //      normal  : commente la ligne courante (gcc)
-  //      visual  : commente la sélection
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "vim_mode == normal",
     "bindings": {
@@ -157,12 +106,6 @@
       "space ;": "vim::ToggleComments"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  3d. MOTIONS / OPÉRATEURS vim ajustés
-  //      g d  : go to definition + recentrage
-  //      Y    : yank du curseur à la fin de ligne (comportement y$)
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
@@ -189,9 +132,8 @@
       "shift-space": "menu::Confirm"
     }
   },
+  // space valait git::ToggleStaged.
   {
-    // Dans le panneau git uniquement : s / S / u / U pour le staging,
-    // d pour discard, et space libere (il valait git::ToggleStaged).
     "context": "GitPanel && ChangesList && !GitBranchSelector && !GitRepositorySelector",
     "bindings": {
       "space": null,
@@ -199,7 +141,7 @@
       "shift-s": "git::StageAll",
       "u": "git::UnstageFile",
       "shift-u": "git::UnstageAll",
-      "d": ["git::RestoreFile", { "skip_prompt": false }]
+      "d": ["git::RestoreFile", {"skip_prompt": false}]
     }
   },
   {
@@ -208,24 +150,6 @@
       "shift-y": ["workspace::SendKeystrokes", "y $"]
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  3e. HARPOON — space m
-  //
-  //      Slots = onglets épinglés. Un onglet épinglé se range à gauche et
-  //      garde sa position, donc pane::ActivateItem N est stable.
-  //
-  //        space m t   épingler / désépingler l'onglet
-  //        space 1..5  aller au slot N
-  //
-  //      Bookmarks Zed pour marquer une ligne précise :
-  //        space m m   poser / retirer un bookmark
-  //        space m a   poser un bookmark avec un libellé
-  //        space m e   modifier le libellé du bookmark courant
-  //        space m l   liste des bookmarks du projet
-  //        space m c   effacer tous les bookmarks
-  //        space m n / p   bookmark suivant / précédent (recentré)
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
@@ -235,7 +159,6 @@
       "space 3": ["pane::ActivateItem", 2],
       "space 4": ["pane::ActivateItem", 3],
       "space 5": ["pane::ActivateItem", 4],
-
       "space m m": "editor::ToggleBookmark",
       "space m a": "editor::ToggleBookmarkWithLabel",
       "space m e": "editor::EditBookmark",
@@ -245,10 +168,6 @@
       "space m p": ["action::Sequence", ["editor::GoToPreviousBookmark", "editor::ScrollCursorCenter"]]
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  3b. LEADER — f  FILES
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
@@ -262,24 +181,15 @@
       "space f d": ["workspace::SendKeystrokes", "ctrl-shift-e shift-d"]
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  4. LEADER — b  BUFFERS
-  //     La fermeture est unifiée sur space w d : pas de space b d, sinon
-  //     Zed affiche l'un ou l'autre au hasard dans l'UI.
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
       "space b b": "tab_switcher::ToggleAll",
       "space b n": "pane::ActivateNextItem",
-      "space b p": "pane::ActivatePreviousItem"
+      "space b p": "pane::ActivatePreviousItem",
+      "space b r": "editor::ReloadFile"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  5. LEADER — w  WINDOWS / PANES
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
@@ -291,24 +201,13 @@
       "space w -": "pane::SplitHorizontal",
       "space w _": "pane::SplitHorizontal",
       "space w d": "pane::CloseActiveItem",
-      "space w o": "workspace::CloseInactiveTabsAndPanes",
+      "space w D": "workspace::CloseInactiveTabsAndPanes",
       "space w z": "workspace::ToggleZoom",
       "space w m": "workspace::CloseAllDocks",
       "space w =": "vim::ResetPaneSizes"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  5b. OVERRIDE des space w du keymap de base
-  //      vim.json binde space w q (fermer) dans deux contextes que le bloc
-  //      VimControl ci-dessus ne couvre pas. On les neutralise et on y
-  //      redeclare space w d.
-  //
-  //      Ce que ces deux blocs desactivent :
-  //        space w q  (helix + hors editeur) : pane::CloseActiveItem
-  //        space w d  (helix)                : pane::SplitDown
-  //      Restent intacts en helix : space w v / s / r (splits), h j k l.
-  // ═════════════════════════════════════════════════════════════════════════
+  // Neutralise space w q (fermer) et space w d (SplitDown) de vim.json.
   {
     "context": "(vim_mode == helix_normal || vim_mode == helix_select) && !menu",
     "bindings": {
@@ -319,6 +218,7 @@
       "space w _": "pane::SplitHorizontal"
     }
   },
+  // Neutralise space w q de vim.json.
   {
     "context": "!Editor && !Terminal",
     "bindings": {
@@ -326,11 +226,6 @@
       "space w d": "pane::CloseActiveItem"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  6. LEADER — j  JUMP  (tous recentrés)
-  //     Structure via action::Sequence ; arguments via f , (SendKeystrokes).
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
@@ -347,11 +242,6 @@
       "space j P": ["workspace::SendKeystrokes", "shift-f , z z"]
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  7. LEADER — l  LSP
-  //     Sauts recentrés : d, i, t.
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
@@ -371,11 +261,6 @@
       "space l f": "editor::FormatSelections"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  8. LEADER — g  GIT
-  //     p = push, P = force push, F = fetch-pull (pull)
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
@@ -393,12 +278,7 @@
       "space g f": "git::Fetch"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  8b. Neutralisation des anciens raccourcis de staging du keymap de base.
-  //      space g s / space g u les remplacent (section 8) et couvrent aussi
-  //      bien la vue git diff qu'un buffer de code ordinaire.
-  // ═════════════════════════════════════════════════════════════════════════
+  // Remplaces par space g s / space g u.
   {
     "context": "Editor && !agent_diff",
     "bindings": {
@@ -406,14 +286,6 @@
       "shift-alt-y": null
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  9. (SEARCH : voir section 3a — space / et space *)
-  // ═════════════════════════════════════════════════════════════════════════
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  10. LEADER — t  TERMINAL (center pane)
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
@@ -423,12 +295,6 @@
       "space t s": ["workspace::SendKeystrokes", "space w - space t n"]
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  10b. TERMINAL CENTRÉ — alignement sur les mappings existants
-  //       Le terminal est un onglet ordinaire : ctrl-space reprend l'arbre
-  //       leader, et on coupe les chemins qui ramèneraient au dock.
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "Terminal",
     "bindings": {
@@ -439,38 +305,28 @@
       "ctrl-shift-6": "pane::SplitHorizontal"
     }
   },
+  // En mode vi, space redevient un leader : on rejoue l'arbre.
   {
     "context": "Terminal && vi_mode",
     "bindings": {
       "shift-a": "terminal::ToggleViMode",
-
-      // Deplacements alignes sur l'editeur. On rejoue les touches que le
-      // mode vi du terminal comprend nativement : ctrl-d / ctrl-u pour la
-      // demi-page, 0 et $ pour le debut et la fin de ligne.
-      // Pas de z z ici : le mode vi du terminal n'a pas d'equivalent.
       "ctrl-j": ["workspace::SendKeystrokes", "ctrl-d"],
       "ctrl-k": ["workspace::SendKeystrokes", "ctrl-u"],
       "ctrl-h": ["workspace::SendKeystrokes", "0"],
       "ctrl-l": ["workspace::SendKeystrokes", "$"],
-
-      // En mode vi, space n'est plus un caractere saisi : on rejoue
-      // l'arbre leader complet pour ne jamais avoir a sortir du terminal.
       "space space": "command_palette::Toggle",
       "space tab": "pane::AlternateFile",
       "space /": "pane::DeploySearch",
       "space q q": "zed::Quit",
-
       "space f f": "file_finder::Toggle",
       "space f p": "project_panel::ToggleFocus",
       "space f g": "git::OpenModifiedFiles",
       "space f s": "workspace::SaveWithoutFormat",
       "space f S": "workspace::SaveAll",
       "space f n": "workspace::NewFile",
-
       "space b b": "tab_switcher::ToggleAll",
       "space b n": "pane::ActivateNextItem",
       "space b p": "pane::ActivatePreviousItem",
-
       "space w h": "workspace::ActivatePaneLeft",
       "space w j": "workspace::ActivatePaneDown",
       "space w k": "workspace::ActivatePaneUp",
@@ -479,18 +335,16 @@
       "space w -": "pane::SplitHorizontal",
       "space w _": "pane::SplitHorizontal",
       "space w d": "pane::CloseActiveItem",
-      "space w o": "workspace::CloseInactiveTabsAndPanes",
+      "space w D": "workspace::CloseInactiveTabsAndPanes",
       "space w z": "workspace::ToggleZoom",
       "space w m": "workspace::CloseAllDocks",
       "space w =": "vim::ResetPaneSizes",
-
       "space m t": "pane::TogglePinTab",
       "space 1": ["pane::ActivateItem", 0],
       "space 2": ["pane::ActivateItem", 1],
       "space 3": ["pane::ActivateItem", 2],
       "space 4": ["pane::ActivateItem", 3],
       "space 5": ["pane::ActivateItem", 4],
-
       "space g g": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-1"],
       "space g c": "git::Commit",
       "space g d": "git::Diff",
@@ -498,31 +352,21 @@
       "space g P": "git::ForcePush",
       "space g F": "git::Pull",
       "space g f": "git::Fetch",
-
       "space t t": "workspace::NewCenterTerminal",
       "space t n": "workspace::NewCenterTerminal",
-
       "space e l": "diagnostics::Deploy"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  11. LEADER — e  ERRORS  (sauts recentrés)
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "VimControl && !menu",
     "bindings": {
       "space e n": ["action::Sequence", ["editor::GoToDiagnostic", "editor::ScrollCursorCenter"]],
       "space e p": ["action::Sequence", ["editor::GoToPreviousDiagnostic", "editor::ScrollCursorCenter"]],
-      "space e l": "diagnostics::Deploy"
+      "space e l": "diagnostics::Deploy",
+      "space o o": "outline::Toggle",
+      "space o p": "outline_panel::ToggleFocus"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  12. LEADER SECONDAIRE — ctrl-space (terminal, panneaux, insert)
-  //      Note : en mode insert, la complétion LSP reste sur ctrl-x ctrl-o
-  //      et la complétion de mots sur ctrl-n / ctrl-p (défauts vim).
-  // ═════════════════════════════════════════════════════════════════════════
   {
     "context": "Terminal || ProjectPanel || GitPanel || OutlinePanel || (Editor && vim_mode == insert)",
     "bindings": {
@@ -532,11 +376,9 @@
       "ctrl-space f S": "workspace::SaveAll",
       "ctrl-space f n": "workspace::NewFile",
       "ctrl-space f p": "project_panel::ToggleFocus",
-
       "ctrl-space b b": "tab_switcher::ToggleAll",
       "ctrl-space b n": "pane::ActivateNextItem",
       "ctrl-space b p": "pane::ActivatePreviousItem",
-
       "ctrl-space w h": "workspace::ActivatePaneLeft",
       "ctrl-space w j": "workspace::ActivatePaneDown",
       "ctrl-space w k": "workspace::ActivatePaneUp",
@@ -545,11 +387,10 @@
       "ctrl-space w -": "pane::SplitHorizontal",
       "ctrl-space w _": "pane::SplitHorizontal",
       "ctrl-space w d": "pane::CloseActiveItem",
-      "ctrl-space w o": "workspace::CloseInactiveTabsAndPanes",
+      "ctrl-space w D": "workspace::CloseInactiveTabsAndPanes",
       "ctrl-space w z": "workspace::ToggleZoom",
       "ctrl-space w m": "workspace::CloseAllDocks",
       "ctrl-space w =": "vim::ResetPaneSizes",
-
       "ctrl-space g g": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-1"],
       "ctrl-space g c": "git::Commit",
       "ctrl-space g d": "git::Diff",
@@ -557,23 +398,16 @@
       "ctrl-space g P": "git::ForcePush",
       "ctrl-space g F": "git::Pull",
       "ctrl-space g f": "git::Fetch",
-
       "ctrl-space /": "pane::DeploySearch",
       "ctrl-space space": "command_palette::Toggle",
-
       "ctrl-space t t": "workspace::NewCenterTerminal",
       "ctrl-space t n": "workspace::NewCenterTerminal",
       "ctrl-space t v": ["workspace::SendKeystrokes", "ctrl-space w / ctrl-space t n"],
       "ctrl-space t s": ["workspace::SendKeystrokes", "ctrl-space w - ctrl-space t n"],
-
       "ctrl-space e l": "diagnostics::Deploy"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  13. Le contexte Diagnostics n'herite pas de VimControl : il faut y
-  //      redeclarer ce que l'on veut voir fonctionner.
-  // ═════════════════════════════════════════════════════════════════════════
+  // Ce contexte n'herite pas de VimControl : tout y est redeclare.
   {
     "context": "Diagnostics",
     "bindings": {
@@ -582,11 +416,7 @@
       "space e p": "editor::GoToPreviousDiagnostic"
     }
   },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  //  14. AUTOCOMPLETE — ctrl-j / ctrl-k dans les popups
-  //      Déclaré en dernier pour l'emporter sur le scroll de la section 1.
-  // ═════════════════════════════════════════════════════════════════════════
+  // Declare apres le scroll ctrl-j/k pour l emporter.
   {
     "context": "Editor && (showing_code_actions || showing_completions)",
     "bindings": {
