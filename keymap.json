@@ -106,30 +106,35 @@
       "space ;": "vim::ToggleComments"
     }
   },
+  // Ouvrir un fichier depuis un multibuffer ou un panneau passe par
+  // SendKeystrokes : le nouvel onglet n'est pas encore focus quand
+  // action::Sequence enchaine le recentrage.
+  // Touches rejouees : alt-enter (OpenExcerpts), space (panel::Open),
+  // enter (menu::Confirm).
   {
     "context": "VimControl && !menu",
     "bindings": {
       "g d": ["action::Sequence", ["editor::GoToDefinition", "editor::ScrollCursorCenter"]],
       "g space": null,
-      "shift-space": "editor::OpenExcerpts",
+      "shift-space": ["workspace::SendKeystrokes", "alt-enter z z"]
     }
   },
   {
     "context": "ProjectPanel && not_editing",
     "bindings": {
-      "shift-space": "project_panel::Open"
+      "shift-space": ["workspace::SendKeystrokes", "space z z"]
     }
   },
   {
     "context": "OutlinePanel && not_editing",
     "bindings": {
-      "shift-space": "outline_panel::OpenSelectedEntry"
+      "shift-space": ["workspace::SendKeystrokes", "space z z"]
     }
   },
   {
     "context": "GitPanel && ChangesList",
     "bindings": {
-      "shift-space": "menu::Confirm"
+      "shift-space": ["workspace::SendKeystrokes", "enter z z"]
     }
   },
   // space valait git::ToggleStaged.
