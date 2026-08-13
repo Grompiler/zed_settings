@@ -111,7 +111,7 @@
     "bindings": {
       "g d": ["action::Sequence", ["editor::GoToDefinition", "editor::ScrollCursorCenter"]],
       "g space": null,
-      "shift-space": "editor::OpenExcerpts"
+      "shift-space": "editor::OpenExcerpts",
     }
   },
   {
@@ -181,13 +181,17 @@
       "space f d": ["workspace::SendKeystrokes", "ctrl-shift-e shift-d"]
     }
   },
+  // space b s / t passent par tasks.json : aucune action Zed n'ouvre un
+  // chemin de fichier arbitraire.
   {
     "context": "VimControl && !menu",
     "bindings": {
       "space b b": "tab_switcher::ToggleAll",
       "space b n": "pane::ActivateNextItem",
       "space b p": "pane::ActivatePreviousItem",
-      "space b r": "editor::ReloadFile"
+      "space b r": "editor::ReloadFile",
+      "space b s": ["task::Spawn", {"task_name": "open scratch"}],
+      "space b t": ["task::Spawn", {"task_name": "open todo"}]
     }
   },
   {
@@ -300,9 +304,15 @@
     "bindings": {
       "ctrl-n": null,
       "ctrl-shift-space": null,
-      "escape": "terminal::ToggleViMode",
       "ctrl-shift-5": "pane::SplitVertical",
       "ctrl-shift-6": "pane::SplitHorizontal"
+    }
+  },
+  // escape entre en mode vi mais n'en sort pas : la sortie est shift-a.
+  {
+    "context": "Terminal && !vi_mode",
+    "bindings": {
+      "escape": "terminal::ToggleViMode"
     }
   },
   // En mode vi, space redevient un leader : on rejoue l'arbre.
