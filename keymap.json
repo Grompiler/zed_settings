@@ -290,7 +290,6 @@
       "space g t": "git::ToggleStaged",
       "space g v": "git::StageRange",
       "space g x": "git::Restore",
-      "space g X": "git::RestoreAll",
       "space g p": "git::Push",
       "space g P": "git::ForcePush",
       "space g F": "git::Pull",
