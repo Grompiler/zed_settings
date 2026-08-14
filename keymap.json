@@ -141,12 +141,11 @@
     "context": "GitPanel && ChangesList && !GitBranchSelector && !GitRepositorySelector",
     "bindings": {
       "space": null,
-      "x": null,
       "s": "git::StageFile",
       "shift-s": "git::StageAll",
       "u": "git::UnstageFile",
       "shift-u": "git::UnstageAll",
-      "d": ["git::RestoreFile", {"skip_prompt": false}]
+      "x": ["git::RestoreFile", {"skip_prompt": false}]
     }
   },
   {
