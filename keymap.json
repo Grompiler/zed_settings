@@ -137,7 +137,6 @@
       "shift-space": ["workspace::SendKeystrokes", "enter z z"]
     }
   },
-  // space et x valaient git::ToggleStaged.
   {
     "context": "GitPanel && ChangesList && !GitBranchSelector && !GitRepositorySelector",
     "bindings": {
