@@ -16,7 +16,7 @@
 [
   // Resize. Contexte repris de vim.json : inactif dans un terminal en saisie.
   {
-    "context": "VimControl && !menu || !Editor && !Terminal",
+    "context": "VimControl && !menu || !Editor && !Terminal || GitDiff || ProjectDiff",
     "bindings": {
       "alt-h": "vim::ResizePaneLeft",
       "alt-j": "vim::ResizePaneDown",
@@ -284,8 +284,13 @@
       "space g B": "git::Blame",
       "space g h": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-2"],
       "space g s": "git::StageAndNext",
+      "space g S": "git::StageAll",
       "space g u": "git::UnstageAndNext",
-      "space g x": "git::RestoreAndNext",
+      "space g U": "git::UnstageAll",
+      "space g t": "git::ToggleStaged",
+      "space g v": "git::StageRange",
+      "space g x": "git::Restore",
+      "space g X": "git::RestoreAll",
       "space g p": "git::Push",
       "space g P": "git::ForcePush",
       "space g F": "git::Pull",
