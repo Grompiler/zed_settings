@@ -281,6 +281,7 @@
       "space g h": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-2"],
       "space g s": "git::StageAndNext",
       "space g u": "git::UnstageAndNext",
+      "space g D": "git::RestoreAndNext",
       "space g p": "git::Push",
       "space g P": "git::ForcePush",
       "space g F": "git::Pull",
