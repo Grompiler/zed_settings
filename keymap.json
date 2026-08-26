@@ -122,7 +122,11 @@
   {
     "context": "ProjectPanel && not_editing",
     "bindings": {
-      "shift-space": "project_panel::Open"
+      "shift-space": "project_panel::Open",
+      "f": "project_panel::NewFile"
+    },
+    "unbind": {
+      "shift-5": "project_panel::NewFile"
     }
   },
   {
@@ -273,14 +277,14 @@
     "context": "VimControl && !menu",
     "bindings": {
       "space g g": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-1"],
-      "space g m": "git::Commit",
+      "space g m m": "git::Commit",
+      "space g m a": "git::Amend",
       "space g c": ["action::Sequence", ["editor::GoToHunk", "editor::ScrollCursorCenter"]],
       "space g C": ["action::Sequence", ["editor::GoToPreviousHunk", "editor::ScrollCursorCenter"]],
       "space g d": "editor::ToggleAllDiffHunks",
       "space g D": "git::OpenFileDiff",
       "space g o": "git::Diff",
-      "space g b b": "git::Branch",
-      "space g b c": "git::CheckoutBranch",
+      "space g b": "git::Branch"
       "space g B": "git::Blame",
       "space g h": ["workspace::SendKeystrokes", "ctrl-shift-g ctrl-2"],
       "space g s": "git::StageAndNext",
