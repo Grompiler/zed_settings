@@ -205,6 +205,13 @@
   {
     "context": "VimControl && !menu",
     "bindings": {
+      "space r r": "task::Spawn",
+      "space r .": "task::Rerun",
+    },
+  },
+  {
+    "context": "VimControl && !menu",
+    "bindings": {
       "space w h": "workspace::ActivatePaneLeft",
       "space w j": "workspace::ActivatePaneDown",
       "space w k": "workspace::ActivatePaneUp",
@@ -219,7 +226,6 @@
       "space w =": "vim::ResetPaneSizes"
     }
   },
-  // Neutralise space w q (fermer) et space w d (SplitDown) de vim.json.
   {
     "context": "(vim_mode == helix_normal || vim_mode == helix_select) && !menu",
     "bindings": {
@@ -300,7 +306,6 @@
       "space g f": "git::Fetch"
     }
   },
-  // Remplaces par space g s / space g u.
   {
     "context": "Editor && !agent_diff",
     "bindings": {
