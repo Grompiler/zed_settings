@@ -40,7 +40,13 @@
       "shift-t": ["vim::PushFindBackward", {"after": true, "multiline": true}]
     }
   },
-  // ctrl-j valait ToggleBottomDock, ctrl-o valait OpenFiles.
+  {
+    "context": "vim_operator == a || vim_operator == i || vim_operator == cs",
+    "bindings": {
+      "f": "vim::Method",
+      "t": "vim::Tag"
+    }
+  },
   {
     "context": "Workspace",
     "bindings": {
