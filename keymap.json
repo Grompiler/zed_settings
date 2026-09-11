@@ -337,14 +337,12 @@
       "ctrl-shift-6": "pane::SplitHorizontal"
     }
   },
-  // escape entre en mode vi mais n'en sort pas : la sortie est shift-a.
   {
     "context": "Terminal && !vi_mode",
     "bindings": {
       "shift-escape": "terminal::ToggleViMode"
     }
   },
-  // En mode vi, space redevient un leader : on rejoue l'arbre.
   {
     "context": "Terminal && vi_mode",
     "bindings": {
