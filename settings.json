@@ -94,6 +94,9 @@
             "breadcrumbs": false
         }
     },
+    "buffer_font_features": {
+      "calt": true,
+    },
     "theme_overrides": {
         "Kanagawa Wave": {
             "editor.active_line_number": "#FF9E3Bff",
