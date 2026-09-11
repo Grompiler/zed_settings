@@ -341,7 +341,7 @@
   {
     "context": "Terminal && !vi_mode",
     "bindings": {
-      "escape": "terminal::ToggleViMode"
+      "shift-escape": "terminal::ToggleViMode"
     }
   },
   // En mode vi, space redevient un leader : on rejoue l'arbre.
