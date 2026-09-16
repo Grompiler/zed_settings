@@ -185,7 +185,7 @@
   {
     "context": "VimControl && !menu",
     "bindings": {
-      "space f f": "file_finder::Toggle",
+      "space f f": ["file_finder::Toggle", {"include_ignored": true}],
       "space f p": "project_panel::ToggleFocus",
       "space f g": "git::OpenModifiedFiles",
       "space f s": "workspace::SaveWithoutFormat",
@@ -355,7 +355,7 @@
       "space tab": "pane::AlternateFile",
       "space /": "pane::DeploySearch",
       "space q q": "zed::Quit",
-      "space f f": "file_finder::Toggle",
+      "space f f": ["file_finder::Toggle", {"include_ignored": true}],
       "space f p": "project_panel::ToggleFocus",
       "space f g": "git::OpenModifiedFiles",
       "space f s": "workspace::SaveWithoutFormat",
@@ -407,7 +407,7 @@
   {
     "context": "Terminal || ProjectPanel || GitPanel || OutlinePanel || (Editor && vim_mode == insert)",
     "bindings": {
-      "ctrl-space f f": "file_finder::Toggle",
+      "ctrl-space f f": ["file_finder::Toggle", {"include_ignored": true}],
       "ctrl-space f g": "git::OpenModifiedFiles",
       "ctrl-space f s": "workspace::SaveWithoutFormat",
       "ctrl-space f S": "workspace::SaveAll",
