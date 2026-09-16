@@ -1,3 +1,6 @@
+# Other tools
+- inside zed term: gitu https://github.com/altsem/gitu
+
 # Configuration clavier Zed — référence
 
 Document de reconstruction : si une mise à jour de Zed casse quelque chose,
